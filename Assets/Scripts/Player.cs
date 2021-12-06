@@ -9,6 +9,10 @@ public class Player : MonoBehaviour
     public Animator animator;
     Vector3 movement;
     float smooth = 5.0f;
+    public Transform attackpoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+    public int playerDamage = 20;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +27,12 @@ public class Player : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            SwitchCollisionDetectionMode();
+        {
+            //SwitchCollisionDetectionMode();
+            Attack();
+            
+        }
+
 
         animator.SetFloat("Horizontal", movement.x);
         animator.SetFloat("Vertical", movement.z);
@@ -35,15 +44,18 @@ public class Player : MonoBehaviour
     {
         movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
         movement.Normalize();
-        Debug.Log(movement.sqrMagnitude);
-        Quaternion targetRotation = Quaternion.LookRotation(movement);
+        //Debug.Log(movement.sqrMagnitude);
+
+        
+
        /* targetRotation = Quaternion.RotateTowards(
             transform.rotation,
             targetRotation,
             360*Time.deltaTime
             );*/
-        if(movement.sqrMagnitude == 1)
+        if(movement.sqrMagnitude == 1 && movement != Vector3.zero)
         {
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
             rb.MoveRotation(targetRotation);
             rb.MovePosition(transform.position + (movement * moveSpeed * Time.fixedDeltaTime));
         }
@@ -89,5 +101,39 @@ public class Player : MonoBehaviour
                 rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
                 break;
         }
+    }
+
+    void Attack()
+    {
+        animator.SetTrigger("Attack");
+
+        Collider[] hitEnemies = Physics.OverlapSphere(attackpoint.position, attackRange, enemyLayers);
+       
+
+        if(hitEnemies.Length != 0)
+        {
+            foreach (Collider enemy in hitEnemies)
+            {
+                Debug.Log("We hit " + enemy.name);
+                enemy.GetComponent<Enemy>().takeDamage(playerDamage);
+            }
+          
+        }
+        else
+        {
+            Debug.Log("No enemy in range");
+        }
+        
+        
+
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if(attackpoint == null)
+        {
+            return;
+        }
+        Gizmos.DrawSphere(attackpoint.position, attackRange);
     }
 }
