@@ -5,8 +5,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int maxHealth = 100;
-    int currentHealh;
+    public float maxHealth = 100;
+    float currentHealh;
     void Start()
     {
         currentHealh = maxHealth;
@@ -19,11 +19,11 @@ public class Enemy : MonoBehaviour
         
     }
 
-    public void takeDamage(int damage)
+    public void takeDamage(float damage)
     {
         currentHealh -= damage;
 
-        if(currentHealh == 0)
+        if(currentHealh <= 0)
         {
             Die();
         }

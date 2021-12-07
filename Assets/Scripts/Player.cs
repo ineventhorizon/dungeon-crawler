@@ -12,13 +12,16 @@ public class Player : MonoBehaviour
     public Transform attackpoint;
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
-    public int playerDamage = 20;
+    public float playerDamage = 20;
+    public float damageMult = 0.02f;
+    private int comboStep;
+    bool ComboPossible;
     // Start is called before the first frame update
     void Start()
     {
         rb = this.GetComponent<Rigidbody>();
         rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionY;
-     
+        comboStep = 1;
         
 
     }
@@ -46,14 +49,15 @@ public class Player : MonoBehaviour
         movement.Normalize();
         //Debug.Log(movement.sqrMagnitude);
 
-        
 
-       /* targetRotation = Quaternion.RotateTowards(
-            transform.rotation,
-            targetRotation,
-            360*Time.deltaTime
-            );*/
-        if(movement.sqrMagnitude == 1 && movement != Vector3.zero)
+
+        /* targetRotation = Quaternion.RotateTowards(
+             transform.rotation,
+             targetRotation,
+             360*Time.deltaTime
+             );*/
+ 
+        if(movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement);
             rb.MoveRotation(targetRotation);
@@ -105,7 +109,12 @@ public class Player : MonoBehaviour
 
     void Attack()
     {
-        animator.SetTrigger("Attack");
+        if (comboStep > 3) comboStep = 1;
+        string atk = "Attack" + comboStep.ToString();
+        Debug.Log(atk);
+        animator.Play(atk);
+        comboStep++;
+
 
         Collider[] hitEnemies = Physics.OverlapSphere(attackpoint.position, attackRange, enemyLayers);
        
@@ -115,7 +124,8 @@ public class Player : MonoBehaviour
             foreach (Collider enemy in hitEnemies)
             {
                 Debug.Log("We hit " + enemy.name);
-                enemy.GetComponent<Enemy>().takeDamage(playerDamage);
+                //playerDamage += damageMult * playerDamage * comboStep;
+                enemy.GetComponent<Enemy>().takeDamage((playerDamage));
             }
           
         }
