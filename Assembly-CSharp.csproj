@@ -56,11 +56,11 @@
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\PlayerCombat.cs" />
     <Compile Include="Assets\Scripts\AnimatorControl.cs" />
+    <Compile Include="Assets\Scripts\DungeonGenerator.cs" />
+    <Compile Include="Assets\Scripts\RoomBeh.cs" />
     <Compile Include="Assets\Scripts\PlayerControl.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
-    <Compile Include="Assets\Scripts\RoomBeh.cs" />
-    <Compile Include="Assets\Scripts\DungeonGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
